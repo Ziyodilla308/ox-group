@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: oxgroupdb
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: oxgroupdb
+    ports:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - "db_network"
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-U', 'postgres' ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: oxgroupapp
+    restart: on-failure
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+    depends_on:
+      - postgres
+    networks:
+      - "db_network"
+
+
+
+volumes:
+  postgres_data:
+
+networks:
+  db_network:
+    driver: bridge
