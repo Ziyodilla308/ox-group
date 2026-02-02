@@ -12,15 +12,12 @@ import { RegisterCompanyDto } from './dto/register-company.dto';
 import {AdminOnly} from "../auth/decorators/roles.decorator";
 import {RolesGuard} from "../auth/guard/roles.guard";
 import {CurrentUser} from "../auth/decorators/current-user.decorator";
-import { Public } from "../auth/decorators/public.decorator"
-
 
 @Controller('company')
 @UseGuards(RolesGuard)
 export class CompanyController {
     constructor(private readonly companyService: CompanyService) {}
 
-    @Public()
     @Post('register-company')
     async registerCompany(
         @CurrentUser('userId') userId: number,
